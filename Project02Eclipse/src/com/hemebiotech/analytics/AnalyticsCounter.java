@@ -6,40 +6,37 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AnalyticsCounter {
 	
-	public static void main(String args[]){
-		
-		HashMap<String,Integer> counter = new HashMap<String,Integer>();
-		
-		try {
-		// first get input
-			BufferedReader reader = new BufferedReader (new FileReader("symptoms.txt"));
-			String line = reader.readLine();
-			while (line != null) {
-				System.out.println("symptom from file: " + line);
-				
-				if(counter.containsKey(line)) {
-					int value = counter.get(line)+1;
-					counter.put(line, value);
-				}else {
-					counter.put(line, 1);
-				}
-				
-				line = reader.readLine();	// get another symptom
+	private String filePath; 
+	private ISymptomReader reader;
+	private HashMap<String,Integer> counter;
+	
+	public AnalyticsCounter(String filePath) {
+		this.filePath = filePath;
+		this.reader = new ReadSymptomDataFromFile(this.filePath);
+	}
+	
+	public void countSymptoms() {
+		counter = new HashMap<String,Integer>();
+		List<String> symptoms = reader.GetSymptoms();
+		for(String symptom : symptoms){
+			if(counter.containsKey(symptom)) {
+				int value = counter.get(symptom)+1;
+				counter.put(symptom, value);
+			}else {
+				counter.put(symptom, 1);
 			}
-			reader.close();
-		}catch(FileNotFoundException fnfe) {
-			System.out.println("file not found exception "+fnfe.getMessage());
-		}catch(IOException ioe) {
-			System.out.println("cannot read input file");
 		}
-		
+	}
+	
+	public void generateCountFile(String outputName) {
 		try {
 			// next generate output
-			FileWriter writer = new FileWriter ("result.out");
+			FileWriter writer = new FileWriter(outputName);
 			for(Map.Entry<String, Integer> entry : counter.entrySet()) {
 				writer.write(entry.getKey()+": " + entry.getValue() + "\n");
 			}
@@ -47,5 +44,11 @@ public class AnalyticsCounter {
 		}catch(IOException ioe) {
 			System.out.println("cannot write output file");
 		}
+	}
+	
+	public static void main(String args[]){
+		AnalyticsCounter counter = new AnalyticsCounter("symptoms.txt");
+		counter.countSymptoms();
+		counter.generateCountFile("result.out");
 	}
 }
