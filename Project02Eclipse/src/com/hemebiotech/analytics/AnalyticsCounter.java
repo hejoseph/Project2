@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Used to count symptoms from input file, and generate an output file
+ * @author HE Joseph
+ *
+ */
 public class AnalyticsCounter {
 	
 	private String filePath; 
@@ -19,10 +24,13 @@ public class AnalyticsCounter {
 	public AnalyticsCounter(String filePath) {
 		this.filePath = filePath;
 		this.reader = new ReadSymptomDataFromFile(this.filePath);
+		this.counter = counter = new HashMap<String,Integer>();
 	}
 	
-	public void countSymptoms() {
-		counter = new HashMap<String,Integer>();
+	/**
+	 * count symptoms
+	 */
+	private void countSymptoms() {
 		List<String> symptoms = reader.GetSymptoms();
 		for(String symptom : symptoms){
 			if(counter.containsKey(symptom)) {
@@ -34,7 +42,12 @@ public class AnalyticsCounter {
 		}
 	}
 	
+	/**
+	 * Generate an output file after counting
+	 * @param outputName
+	 */
 	public void generateCountFile(String outputName) {
+		countSymptoms();
 		try {
 			// next generate output
 			FileWriter writer = new FileWriter(outputName);
@@ -52,7 +65,6 @@ public class AnalyticsCounter {
 	
 	public static void main(String args[]){
 		AnalyticsCounter counter = new AnalyticsCounter("symptoms.txt");
-		counter.countSymptoms();
 		counter.generateCountFile("result.out");
 	}
 }
