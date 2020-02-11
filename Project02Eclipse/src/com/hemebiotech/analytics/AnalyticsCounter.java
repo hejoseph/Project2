@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class AnalyticsCounter {
 	
@@ -37,7 +38,10 @@ public class AnalyticsCounter {
 		try {
 			// next generate output
 			FileWriter writer = new FileWriter(outputName);
-			for(Map.Entry<String, Integer> entry : counter.entrySet()) {
+			
+			Map<String, Integer> sortedCounter = new TreeMap<String, Integer>(counter);
+			
+			for(Map.Entry<String, Integer> entry : sortedCounter.entrySet()) {
 				writer.write(entry.getKey()+": " + entry.getValue() + "\n");
 			}
 			writer.close();
