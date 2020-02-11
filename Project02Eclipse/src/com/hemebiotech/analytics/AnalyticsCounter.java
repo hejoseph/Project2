@@ -35,6 +35,7 @@ public class AnalyticsCounter {
 	
 				line = reader.readLine();	// get another symptom
 			}
+			reader.close();
 		}catch(FileNotFoundException fnfe) {
 			System.out.println("file not found exception "+fnfe.getMessage());
 		}catch(IOException ioe) {
